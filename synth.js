@@ -2,10 +2,11 @@ export default class Synth {
   constructor() {
     this.context = new AudioContext();
 
-    var noise = new Array(this.context.sampleRate / 2).fill(0);
+    var noiseSamples = this.context.sampleRate * 3;
+    var noise = new Array(noiseSamples).fill(0);
     for (var i = 0; i < noise.length; i++) noise[i] = Math.random() * 2 - 1;
     this.noiseBuffer = new AudioBuffer({
-      length: this.context.sampleRate / 2,
+      length: noiseSamples,
       sampleRate: this.context.sampleRate
     });
     this.noiseBuffer.copyToChannel(new Float32Array(noise), 0);
@@ -76,6 +77,7 @@ export default class Synth {
     this.eq.type = type;
     this.eq.frequency.value = frequency;
     this.eq.Q.value = q;
+    this.eq.gain.value = 2;
   }
 
   setGain(n) {

@@ -10,6 +10,7 @@ var style = `
   display: grid;
   grid-template-columns: 1fr 4fr;
   align-items: stretch;
+  gap: 24px;
 }
 
 .buttons {

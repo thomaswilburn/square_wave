@@ -9,6 +9,7 @@ var style = `
   grid-template-columns: 1fr 4fr;
   min-height: 0;
   height: 100%;
+  gap: 24px;
 }
 
 canvas {
@@ -50,13 +51,7 @@ input {
 }
 `;
 
-var modes = {
-  note: ["gain", "frequency"],
-  noise: ["gain", "rate"],
-  lowpass: ["q", "frequency"],
-  chorus: ["depth", "rate"],
-  delay: ["depth", "time"]
-}
+var modes = "note noise lowpass chorus delay".split(" ");
 
 class TouchPad extends HTMLElement {
   mode = "note";
@@ -66,7 +61,7 @@ class TouchPad extends HTMLElement {
     var root = this.attachShadow({ mode: "open" });
     this.canvas = html("canvas", { width: 255, height: 255 });
     var contents = html("div.grid", [
-      html("div.modes", Object.keys(modes).map(d => html("div.toggle", [
+      html("div.modes", modes.map(d => html("div.toggle", [
         html("input", { id: "toggle-" + d, name: "vertical", type: "radio", value: d }),
         html("label", { for: "toggle-" + d }, d)
       ]))),
@@ -128,13 +123,8 @@ class TouchPad extends HTMLElement {
 
     // dispatch combined event with either noteon or paramchange type
     var { mode } = this;
-    var [xParam, yParam] = modes[mode];
     y = 1 - y;
-    var data = {
-      mode,
-      xParam, x,
-      yParam, y
-    }
+    var data = { mode, x, y };
     this.dispatch(e.type == "pointerdown" ? "paddown" : "padmotion", data);
   }
 

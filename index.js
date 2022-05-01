@@ -87,16 +87,20 @@ class SquareWave extends HTMLElement {
       case "noise":
         var r = (this.numberToFrequency(y) / 440) ** 3;
         this.synth.setGain(x);
-        this.synth.noiseOn(r);
+        this.synth.noiseOn(y ** 2);
         break;
 
       case "lowpass":
         this.synth.setFilter("lowpass", y * 3000 + 160, x * 30);
         break;
 
+      case "bandpass":
+        this.synth.setFilter("bandpass", y * 2000 + 80, x * 30);
+        break;
+
       case "chorus":
         this.synth.setFilter(false);
-        this.synth.setDelay(y * .05, x);
+        this.synth.setDelay(y * .03, x);
         break;
 
       case "delay":
