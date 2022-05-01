@@ -3,15 +3,26 @@ import "./looper.js";
 import html from "./html.js";
 import Synth from "./synth.js";
 
-window.oncontextmenu = () => false;
+var css = `
+.column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+touch-pad {
+  flex: 1;
+}
+`
 
 class SquareWave extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: "open" });
+    var style = html("style", css);
     var looper = html("loop-pedal");
     var pad = html("touch-pad");
-    this.shadowRoot.append(looper, pad);
+    this.shadowRoot.append(html("div.column", [ style, looper, pad ]));
 
     this.noteCallback = this.noteCallback.bind(this);
 

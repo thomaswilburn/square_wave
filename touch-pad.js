@@ -7,8 +7,8 @@ var style = `
   text-transform: uppercase;
   display: grid;
   grid-template-columns: 1fr 4fr;
-  aspect-ratio: 5 / 4;
   min-height: 0;
+  height: 100%;
 }
 
 canvas {
