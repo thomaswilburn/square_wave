@@ -3,6 +3,8 @@ import "./looper.js";
 import html from "./html.js";
 import Synth from "./synth.js";
 
+window.oncontextmenu = () => false;
+
 class SquareWave extends HTMLElement {
   constructor() {
     super();
@@ -17,8 +19,23 @@ class SquareWave extends HTMLElement {
     pad.addEventListener("padup", this.noteCallback);
     pad.addEventListener("padmotion", this.noteCallback);
 
-    this.synth = new Synth();
-    looper.connect(this.synth.context, this.synth.patchOut, this.synth.patchIn);
+    var screen = html("div.screen", "START");
+    screen.style.position = "fixed";
+    screen.style.display = "flex";
+    screen.style.alignItems = "center";
+    screen.style.top = 0;
+    screen.style.left = 0;
+    screen.style.width = "100%";
+    screen.style.height = "100%";
+    screen.style.background = "#FFF9";
+    screen.style.justifyContent = "center";
+    screen.style.fontFamily = "monospace";
+    screen.onclick = () => {
+      this.synth = new Synth();
+      looper.connect(this.synth.context, this.synth.patchOut, this.synth.patchIn);
+      screen.remove();
+    }
+    this.shadowRoot.append(screen);
   }
 
   numberToFrequency(n) {
@@ -37,6 +54,7 @@ class SquareWave extends HTMLElement {
     if (e.type == "padup") {
       this.synth.noteOff();
       this.synth.noiseOff();
+      this.synth.setFilter(false);
       return;
     }
 
@@ -61,7 +79,7 @@ class SquareWave extends HTMLElement {
         break;
 
       case "lowpass":
-        this.synth.setFilter("lowpass", y * 5000 + 160, x * 10);
+        this.synth.setFilter("lowpass", y * 3000 + 160, x * 30);
         break;
 
       case "chorus":

@@ -78,8 +78,9 @@ class LooperElement extends HTMLElement {
       html("div.sample", [this.canvas, this.playhead])
     ]));
 
-    this.recButton.addEventListener("click", this.toggleRecord.bind(this));
-    this.playButton.addEventListener("click", this.togglePlay.bind(this));
+    // this.recButton.addEventListener("click", this.toggleRecord.bind(this));
+    this.playButton.addEventListener("pointerdown", this.togglePlay.bind(this));
+    this.recButton.addEventListener("pointerdown", this.toggleRecord.bind(this));
 
     window.addEventListener("keydown", this.keyCallback.bind(this));
   }
@@ -139,7 +140,7 @@ class LooperElement extends HTMLElement {
     }
   }
 
-  toggleRecord() {
+  toggleRecord(e) {
     if (!this.context) return;
     this.recording = !this.recording;
     this.recButton.setAttribute("aria-pressed", this.recording);

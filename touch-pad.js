@@ -80,6 +80,7 @@ class TouchPad extends HTMLElement {
     this.canvas.addEventListener("pointerdown", p);
     this.canvas.addEventListener("pointerup", p);
     this.canvas.addEventListener("pointermove", p);
+    this.canvas.addEventListener("touchstart", this.cancel);
 
     this.context = this.canvas.getContext("2d");
 
@@ -91,10 +92,18 @@ class TouchPad extends HTMLElement {
     this.mode = target.value;
   }
 
+  cancel(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }
+
   pointerEventCallback(e) {
     if (e.type == "pointerup") {
       this.dispatch("padup");
     }
+
+    this.canvas.releasePointerCapture(e.pointerId);
+    e.preventDefault();
 
     if (e.buttons == 0) return;
 
