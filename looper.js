@@ -90,10 +90,13 @@ class LooperElement extends HTMLElement {
     this.input = input;
     await context.audioWorklet.addModule("loop-worklet.js");
     this.looper = new AudioWorkletNode(context, "loop-worklet");
+    this.delay = new DelayNode(context);
+    this.delay.delayTime.value = .001;
     this.output = new GainNode(context);
     this.output.gain.value = .8;
     input.connect(this.looper);
-    this.looper.connect(this.output);
+    this.looper.connect(this.delay);
+    this.delay.connect(this.output);
     this.looper.port.addEventListener("message", this.onmessage.bind(this));
     this.looper.port.start();
     this.output.connect(output);
