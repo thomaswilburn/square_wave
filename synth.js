@@ -30,6 +30,8 @@ export default class Synth {
     this.patchIn.connect(this.eq);
 
     this.setDelay(0, 0);
+    this.setFilter(false);
+    this.setGain(1);
   }
 
   noteOn(frequency) {

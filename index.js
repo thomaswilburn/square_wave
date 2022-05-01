@@ -36,7 +36,7 @@ class SquareWave extends HTMLElement {
       this.synth.context.resume();
       screen.remove();
     }
-    // this.shadowRoot.append(screen);
+    this.shadowRoot.append(screen);
   }
 
   numberToFrequency(n) {
@@ -65,8 +65,8 @@ class SquareWave extends HTMLElement {
     switch (mode) {
       case "note":
         var f = this.numberToFrequency(y);
-        this.synth.noteOn(f);
         this.synth.setGain(x);
+        this.synth.noteOn(f);
         break;
 
       case "notch":
@@ -75,8 +75,8 @@ class SquareWave extends HTMLElement {
 
       case "noise":
         var r = (this.numberToFrequency(y) / 440) ** 3;
-        this.synth.noiseOn(r);
         this.synth.setGain(x);
+        this.synth.noiseOn(r);
         break;
 
       case "lowpass":
