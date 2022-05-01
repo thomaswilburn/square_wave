@@ -33,7 +33,6 @@ export default class Synth {
   }
 
   noteOn(frequency) {
-    this.context.resume();
     if (this.voice) {
       return this.voice.frequency.value = frequency;
     }
@@ -50,7 +49,6 @@ export default class Synth {
   }
 
   noiseOn(playbackRate) {
-    this.context.resume();
     if (this.noise) {
       return this.noise.playbackRate.value = playbackRate;
     }

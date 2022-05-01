@@ -30,12 +30,13 @@ class SquareWave extends HTMLElement {
     screen.style.background = "#FFF9";
     screen.style.justifyContent = "center";
     screen.style.fontFamily = "monospace";
+    this.synth = new Synth();
+    looper.connect(this.synth.context, this.synth.patchOut, this.synth.patchIn);
     screen.onclick = () => {
-      this.synth = new Synth();
-      looper.connect(this.synth.context, this.synth.patchOut, this.synth.patchIn);
+      this.synth.context.resume();
       screen.remove();
     }
-    this.shadowRoot.append(screen);
+    // this.shadowRoot.append(screen);
   }
 
   numberToFrequency(n) {
