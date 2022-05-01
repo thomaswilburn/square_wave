@@ -2,6 +2,7 @@ export default class Synth {
   constructor() {
     this.context = new AudioContext();
 
+    // generate noise
     var noiseSamples = this.context.sampleRate * 3;
     var noise = new Array(noiseSamples).fill(0);
     for (var i = 0; i < noise.length; i++) noise[i] = Math.random() * 2 - 1;
@@ -11,12 +12,22 @@ export default class Synth {
     });
     this.noiseBuffer.copyToChannel(new Float32Array(noise), 0);
 
+    // routing nodes
+    this.fxSend = new GainNode(this.context);
+    this.fxReturn = new GainNode(this.context);
+    this.output = new GainNode(this.context);
+    this.fxSend.connect(this.context.destination);
+
     this.amp = new GainNode(this.context);
     this.eq = new BiquadFilterNode(this.context, { Q: 1 });
-    this.voice = null;
+
+    // OSC -> gain -> filter -> out
     this.amp.connect(this.eq);
-    this.eq.connect(this.context.destination);
+    this.eq.connect(this.fxSend);
+
+    // create the delay stages
     this.echoBox = new Array(5).fill(0).map(_ => new DelayNode(this.context, { maxDelayTime: 20 }));
+    // filter -> delay chain -> fx/out
     for (var echo of this.echoBox) {
       this.amp.connect(echo);
       echo.amp = new GainNode(this.context);
@@ -24,11 +35,8 @@ export default class Synth {
       echo.amp.connect(this.eq);
     }
 
-    this.patchOut = new GainNode(this.context);
-    this.patchIn = new GainNode(this.context);
-
-    this.eq.connect(this.patchOut);
-    this.patchIn.connect(this.eq);
+    this.fxSend.connect(this.output);
+    this.fxReturn.connect(this.eq);
 
     this.setDelay(0, 0);
     this.setFilter(false);

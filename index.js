@@ -42,7 +42,7 @@ class SquareWave extends HTMLElement {
     screen.style.justifyContent = "center";
     screen.style.fontFamily = "monospace";
     this.synth = new Synth();
-    looper.connect(this.synth.context, this.synth.patchOut, this.synth.patchIn);
+    looper.connect(this.synth.context, this.synth.fxSend, this.synth.fxReturn);
     screen.onclick = () => {
       this.synth.context.resume();
       screen.remove();
