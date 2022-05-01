@@ -7,19 +7,24 @@ Signal diagram
 --------------
 
 ```mermaid
-flowchart signal
-  S[Square OSC] --> G
-  N[Noise] --> G
-  G[Gain] --> F
-  G --> D
-  F[Filter] --> O
-  F[Filter] --> S
-  R{FX Return} --> F
-  O{Output}
-  F --> S{FX Send}
-  D[Delay unit] --> F
-  S --> L{Looper}
-  L --> R
+flowchart LR
+
+  S{Note};
+  N{Noise};
+  G[Gain];
+  F[Filter];
+  O{Output};
+  D[Delay unit];
+  L[Looper];
+  
+  S --> G;
+  N --> G;
+  G --> F;
+  G --> D;
+  D --> F;
+  F -->|FX Send| L
+  L -->|FX Return| F;
+  F --> O
 ```
 
 Looper
