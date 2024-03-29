@@ -88,7 +88,6 @@ class LooperElement extends HTMLElement {
 
   async connect(context, input, output) {
     this.context = context;
-    this.input = input;
     await context.audioWorklet.addModule("loop-worklet.js");
     this.looper = new AudioWorkletNode(context, "loop-worklet");
     this.delay = new DelayNode(context);

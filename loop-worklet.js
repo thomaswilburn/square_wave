@@ -47,6 +47,9 @@ class LoopWorklet extends AudioWorkletProcessor {
   process(inputs, outputs, parameters) {
     // console.log("process");
     var [ input ] = inputs;
+    if (!input.length) {
+      return true;
+    }
     if (this.recording) {
       var [ channel ] = input;
       this.buffer.push(...channel);

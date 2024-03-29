@@ -70,7 +70,7 @@ class TouchPad extends HTMLElement {
     root.append(html("style", style));
     root.append(contents);
 
-    this.addEventListener("input", this.toggledCallback.bind(this));
+    root.addEventListener("input", this.toggledCallback.bind(this));
     var p = this.pointerEventCallback = this.pointerEventCallback.bind(this);
     this.canvas.addEventListener("pointerdown", p);
     this.canvas.addEventListener("pointerup", p);
@@ -83,7 +83,7 @@ class TouchPad extends HTMLElement {
   }
 
   toggledCallback(e) {
-    var target = e.originalTarget || e.path[0];
+    var target = e.target || e.path[0];
     this.mode = target.value;
   }
 
