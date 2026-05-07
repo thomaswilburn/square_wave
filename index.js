@@ -13,7 +13,7 @@ var css = `
 touch-pad {
   flex: 1;
 }
-`
+`;
 
 class SquareWave extends HTMLElement {
   constructor() {

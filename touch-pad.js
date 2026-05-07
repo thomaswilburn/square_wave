@@ -10,14 +10,16 @@ var style = `
   min-height: 0;
   height: 100%;
   gap: 24px;
+  justify-content: stretch;
+  align-items: stretch;
 }
 
 canvas {
   background: #F8F8F8;
-  width: 100%;
-  height: 100%;
   display: block;
   touch-action: none;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .modes {
@@ -51,17 +53,24 @@ input {
 }
 `;
 
-var modes = "note noise lowpass chorus delay".split(" ");
+var modes = {
+  "note": "blue",
+  "noise": "red",
+  "lowpass": "yellow",
+  "chorus": "purple",
+  "delay": "green"
+}
 
 class TouchPad extends HTMLElement {
   mode = "note";
+  marks = {};
 
   constructor() {
     super();
     var root = this.attachShadow({ mode: "open" });
     this.canvas = html("canvas", { width: 255, height: 255 });
     var contents = html("div.grid", [
-      html("div.modes", modes.map(d => html("div.toggle", [
+      html("div.modes", Object.keys(modes).map(d => html("div.toggle", [
         html("input", { id: "toggle-" + d, name: "vertical", type: "radio", value: d }),
         html("label", { for: "toggle-" + d }, d)
       ]))),
@@ -102,8 +111,10 @@ class TouchPad extends HTMLElement {
 
     if (e.buttons == 0) return;
 
-    var { canvas, context } = this;
+    var { mode, canvas, context } = this;
     var bounds = canvas.getBoundingClientRect();
+    canvas.width = bounds.width;
+    canvas.height = bounds.height;
     // get current coordinates
     var x = e.clientX - bounds.left;
     var y = e.clientY - bounds.top;
@@ -113,6 +124,8 @@ class TouchPad extends HTMLElement {
     // draw the lines
     var dx = (x * this.canvas.width) | 0;
     var dy = (y * this.canvas.height) | 0;
+    this.context.fillStyle = "black";
+    this.context.beginPath();
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.context.fillRect(dx, 0, 1, this.canvas.height);
     this.context.fillRect(0, dy, this.canvas.width, 1);
@@ -121,8 +134,19 @@ class TouchPad extends HTMLElement {
     this.context.clearRect(dx - 4, dy - 8, 8, 16);
     this.context.clearRect(dx - 7, dy - 7, 14, 14);
 
+    // draw marks
+    this.marks[mode] = [dx, dy];
+    for (var k in this.marks) {
+      var color = modes[k];
+      var [cx, cy] = this.marks[k];
+      this.context.beginPath();
+      this.context.globalAlpha = k == mode ? .5 : .2;
+      this.context.arc(cx, cy, this.canvas.height * .04, 0, Math.PI * 2);
+      this.context.fillStyle = color;
+      this.context.fill();
+    }
+
     // dispatch combined event with either noteon or paramchange type
-    var { mode } = this;
     y = 1 - y;
     var data = { mode, x, y };
     this.dispatch(e.type == "pointerdown" ? "paddown" : "padmotion", data);

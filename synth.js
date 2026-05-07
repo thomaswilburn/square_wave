@@ -89,7 +89,7 @@ export default class Synth {
   }
 
   setGain(n) {
-    this.amp.gain.value = n;
+    this.amp.gain.value = n * .5;
   }
 
   setDelay(time, depth) {
